@@ -1,0 +1,57 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+%}
+<h1 align="center">Mémo Etudiant</h1>
+<h5 align="center">Bienvenu {{ user.first_name }}!</h5>
+<div style="overflow-y: scroll; height: 230px;">
+<ul class="list-group list-group-flush" id="notes">
+  {% for note in user.notes %}
+  <li class="list-group-item">
+    <h5 class="text-monospace font-weight-bold">{{ note.title }}</h5>
+    <img src="data:image/png;base64,{{ note.encoded_image }}" />
+    
+    
+    <button type="button" class="btn" onClick="deleteNote({{ note.id }})" style="float: right">
+    
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <button type="submit" class="btn btn-danger" style="float: right" onClick="modifyNote({{ note.id }})" >Modifier</button>
+    <br><p class="text-monospace" >{{ note.explanation }}</p>
+  </li>
+  {% endfor %}
+</ul>
+</div>
+<form method="POST">
+  <textarea name="note" id="note" class="form-control"></textarea>
+  <br />
+  <div align="center">
+    <button type="submit" class="btn btn-primary">Ajouter</button>
+  </div>
+</form>
+<script type="text/javascript">
+      function deleteNote(noteId) {
+  fetch("/delete-note", {
+    method: "POST",
+    body: JSON.stringify({ noteId: noteId }),
+  }).then((_res) => {
+    window.location.href = "/";
+  });
+  }
+
+  function modifyNote(noteId) {
+    var textarea = document.getElementById("note");
+    var content = textarea.value;
+    content = content.split("|")
+    var new_title = content[0]
+    var new_latex = content[1]
+    var new_explanation = content[2] 
+  fetch("/modify-note", {
+    method: "POST",
+    body: JSON.stringify({ noteId: noteId, new_title: new_title,new_latex: new_latex, new_explanation: new_explanation }),
+  }).then((_res) => {
+    window.location.href = "/";
+  });
+  }
+
+
+</script>
+{% endblock %}

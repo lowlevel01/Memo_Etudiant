@@ -1,0 +1,8 @@
+flask
+Flask-SQLAlchemy
+flask-login
+sympy
+pillow
+base64
+io
+antlr4-python3-runtime==4.10
